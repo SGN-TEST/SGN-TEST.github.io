@@ -9,9 +9,23 @@
 
 <style>
 body { font-family: sans-serif; padding: 10px; }
-.preview { margin-top: 10px; }
 .preview img { max-width: 100%; border: 1px solid #ccc; }
-.preview button { margin-top: 6px; padding: 6px 10px; }
+
+.gallery {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+	gap: 8px;
+	margin-top: 10px;
+}
+.gallery img {
+	width: 100%;
+	border: 1px solid #ccc;
+}
+.gallery button {
+	width: 100%;
+	font-size: 12px;
+}
+
 .toast {
 	position: fixed;
 	bottom: 20px;
@@ -29,99 +43,111 @@ body { font-family: sans-serif; padding: 10px; }
 <body>
 <h1>HTML CAPTURE</h1>
 
-<dl>
-	<dt>写真</dt>
-	<dd>
-		<div>
-			<label><span>背面カメラ</span>
-			<input type="file" accept="image/*" capture="environment" class="photo">
-			</label>
-			<div class="preview"></div>
-		</div>
+<!-- 撮影 -->
+<h2>撮影</h2>
+<input type="file" accept="image/*" capture="environment" id="camera">
+<div class="preview"></div>
 
-		<div>
-			<label><span>インカメラ</span>
-			<input type="file" accept="image/*" capture="user" class="photo">
-			</label>
-			<div class="preview"></div>
-		</div>
-	</dd>
-</dl>
+<!-- 保存済み一覧 -->
+<h2>保存済み写真</h2>
+<div class="gallery" id="gallery"></div>
 
 <div class="toast" id="toast">保存しました</div>
 
-<small>Home <a href="https://sgn-test.github.io/">Back</a></small>
-
 <script>
 // --------------------
-// PWA (最低限)
+// Service Worker
 // --------------------
 if ('serviceWorker' in navigator) {
 	navigator.serviceWorker.register('sw.js');
 }
 
 // --------------------
-// IndexedDB 保存
+// IndexedDB
 // --------------------
-function saveToDB(blob) {
-	const req = indexedDB.open('capture-db', 1);
-	req.onupgradeneeded = e => {
-		e.target.result.createObjectStore('photos', { autoIncrement: true });
-	};
-	req.onsuccess = e => {
-		const db = e.target.result;
-		const tx = db.transaction('photos', 'readwrite');
-		tx.objectStore('photos').add(blob);
+let db;
+const req = indexedDB.open('capture-db', 1);
+
+req.onupgradeneeded = e => {
+	e.target.result.createObjectStore('photos', { autoIncrement: true });
+};
+
+req.onsuccess = e => {
+	db = e.target.result;
+	loadGallery();
+};
+
+// --------------------
+// 保存
+// --------------------
+function savePhoto(blob) {
+	const tx = db.transaction('photos', 'readwrite');
+	tx.objectStore('photos').add(blob);
+	tx.oncomplete = loadGallery;
+}
+
+// --------------------
+// 一覧表示
+// --------------------
+function loadGallery() {
+	const gallery = document.getElementById('gallery');
+	gallery.innerHTML = '';
+
+	const tx = db.transaction('photos', 'readonly');
+	const store = tx.objectStore('photos');
+
+	store.openCursor().onsuccess = e => {
+		const cursor = e.target.result;
+		if (!cursor) return;
+
+		const div = document.createElement('div');
+
+		const img = document.createElement('img');
+		img.src = URL.createObjectURL(cursor.value);
+		div.appendChild(img);
+
+		// 削除ボタン
+		const del = document.createElement('button');
+		del.textContent = '削除';
+		del.onclick = () => {
+			const dtx = db.transaction('photos', 'readwrite');
+			dtx.objectStore('photos').delete(cursor.key);
+			dtx.oncomplete = loadGallery;
+		};
+		div.appendChild(del);
+
+		gallery.appendChild(div);
+		cursor.continue();
 	};
 }
 
 // --------------------
-// トースト表示
+// 撮影 → 保存
+// --------------------
+document.getElementById('camera').addEventListener('change', e => {
+	const file = e.target.files[0];
+	if (!file) return;
+
+	// プレビュー
+	const preview = document.querySelector('.preview');
+	preview.innerHTML = '';
+	const img = document.createElement('img');
+	img.src = URL.createObjectURL(file);
+	preview.appendChild(img);
+
+	// 自動保存っぽい
+	savePhoto(file);
+	showToast();
+});
+
+// --------------------
+// トースト
 // --------------------
 function showToast() {
-	const toast = document.getElementById('toast');
-	toast.style.display = 'block';
-	setTimeout(() => toast.style.display = 'none', 2000);
+	const t = document.getElementById('toast');
+	t.style.display = 'block';
+	setTimeout(() => t.style.display = 'none', 2000);
 }
-
-// --------------------
-// 撮影 → プレビュー → 自動保存っぽい
-// --------------------
-document.querySelectorAll('.photo').forEach(input => {
-	input.addEventListener('change', e => {
-		const file = e.target.files[0];
-		if (!file) return;
-
-		const container = e.target.closest('div');
-		const preview = container.querySelector('.preview');
-		preview.innerHTML = '';
-
-		// プレビュー
-		const img = document.createElement('img');
-		const url = URL.createObjectURL(file);
-		img.src = url;
-		preview.appendChild(img);
-
-		// IndexedDBに自動保存
-		saveToDB(file);
-		showToast();
-
-		// 共有ボタン（iOS対応）
-		if (navigator.share) {
-			const btn = document.createElement('button');
-			btn.textContent = '写真に保存';
-			btn.onclick = async () => {
-				await navigator.share({
-					files: [file],
-					title: '写真を保存'
-				});
-			};
-			preview.appendChild(btn);
-		}
-
-		img.onload = () => URL.revokeObjectURL(url);
-	});
-});
 </script>
 
 </body>
