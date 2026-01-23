@@ -50,3 +50,34 @@
 
 		<div>
 			<label><span>インカメラ</span>
+			<input type="file" capture="user" accept="video/*">
+			</label>
+		</div>
+	</dd>
+</dl>
+
+<small>Home <a href="https://sgn-test.github.io/">Back</a></small>
+
+<script>
+document.querySelectorAll('.photo-capture').forEach(input => {
+	input.addEventListener('change', function(e) {
+		const file = e.target.files[0];
+		if (!file) return;
+
+		const preview = e.target.closest('div').querySelector('.preview');
+		preview.innerHTML = '';
+
+		const img = document.createElement('img');
+		img.src = URL.createObjectURL(file);
+		preview.appendChild(img);
+
+		// メモリ解放（画像読み込み後）
+		img.onload = () => {
+			URL.revokeObjectURL(img.src);
+		};
+	});
+});
+</script>
+
+</body>
+</html>
