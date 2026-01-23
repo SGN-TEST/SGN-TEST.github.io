@@ -1,24 +1,27 @@
 <!DOCTYPE html>
-<html xml:lang="ja" lang="ja">
+<html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
 <title>HTML CAPTURE | BLACKFLAG</title>
-<link rel="stylesheet" type="text/css" href="css/reset.css">
-<link rel="stylesheet" type="text/css" href="css/common.css">
+
+<link rel="manifest" href="manifest.json">
 
 <style>
-.preview {
-	margin-top: 10px;
-}
-.preview img {
-	max-width: 100%;
-	height: auto;
-	border: 1px solid #ccc;
-}
-.preview button {
-	margin-top: 8px;
-	padding: 6px 12px;
+body { font-family: sans-serif; padding: 10px; }
+.preview { margin-top: 10px; }
+.preview img { max-width: 100%; border: 1px solid #ccc; }
+.preview button { margin-top: 6px; padding: 6px 10px; }
+.toast {
+	position: fixed;
+	bottom: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	background: rgba(0,0,0,0.8);
+	color: #fff;
+	padding: 8px 16px;
+	border-radius: 20px;
+	display: none;
 }
 </style>
 </head>
@@ -31,25 +34,61 @@
 	<dd>
 		<div>
 			<label><span>背面カメラ</span>
-			<input type="file" capture="environment" accept="image/*" class="photo-capture">
+			<input type="file" accept="image/*" capture="environment" class="photo">
 			</label>
 			<div class="preview"></div>
 		</div>
 
 		<div>
 			<label><span>インカメラ</span>
-			<input type="file" capture="user" accept="image/*" class="photo-capture">
+			<input type="file" accept="image/*" capture="user" class="photo">
 			</label>
 			<div class="preview"></div>
 		</div>
 	</dd>
 </dl>
 
+<div class="toast" id="toast">保存しました</div>
+
 <small>Home <a href="https://sgn-test.github.io/">Back</a></small>
 
 <script>
-document.querySelectorAll('.photo-capture').forEach(input => {
-	input.addEventListener('change', function(e) {
+// --------------------
+// PWA (最低限)
+// --------------------
+if ('serviceWorker' in navigator) {
+	navigator.serviceWorker.register('sw.js');
+}
+
+// --------------------
+// IndexedDB 保存
+// --------------------
+function saveToDB(blob) {
+	const req = indexedDB.open('capture-db', 1);
+	req.onupgradeneeded = e => {
+		e.target.result.createObjectStore('photos', { autoIncrement: true });
+	};
+	req.onsuccess = e => {
+		const db = e.target.result;
+		const tx = db.transaction('photos', 'readwrite');
+		tx.objectStore('photos').add(blob);
+	};
+}
+
+// --------------------
+// トースト表示
+// --------------------
+function showToast() {
+	const toast = document.getElementById('toast');
+	toast.style.display = 'block';
+	setTimeout(() => toast.style.display = 'none', 2000);
+}
+
+// --------------------
+// 撮影 → プレビュー → 自動保存っぽい
+// --------------------
+document.querySelectorAll('.photo').forEach(input => {
+	input.addEventListener('change', e => {
 		const file = e.target.files[0];
 		if (!file) return;
 
@@ -57,29 +96,30 @@ document.querySelectorAll('.photo-capture').forEach(input => {
 		const preview = container.querySelector('.preview');
 		preview.innerHTML = '';
 
-		// 画像表示
+		// プレビュー
 		const img = document.createElement('img');
 		const url = URL.createObjectURL(file);
 		img.src = url;
 		preview.appendChild(img);
 
-		// 保存ボタン
-		const btn = document.createElement('button');
-		btn.textContent = '保存';
-		btn.addEventListener('click', () => {
-			const a = document.createElement('a');
-			a.href = url;
-			a.download = 'photo_' + Date.now() + '.jpg';
-			document.body.appendChild(a);
-			a.click();
-			document.body.removeChild(a);
-		});
-		preview.appendChild(btn);
+		// IndexedDBに自動保存
+		saveToDB(file);
+		showToast();
 
-		// メモリ解放
-		img.onload = () => {
-			URL.revokeObjectURL(url);
-		};
+		// 共有ボタン（iOS対応）
+		if (navigator.share) {
+			const btn = document.createElement('button');
+			btn.textContent = '写真に保存';
+			btn.onclick = async () => {
+				await navigator.share({
+					files: [file],
+					title: '写真を保存'
+				});
+			};
+			preview.appendChild(btn);
+		}
+
+		img.onload = () => URL.revokeObjectURL(url);
 	});
 });
 </script>
