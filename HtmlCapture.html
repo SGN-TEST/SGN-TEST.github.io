@@ -16,6 +16,10 @@
 	height: auto;
 	border: 1px solid #ccc;
 }
+.preview button {
+	margin-top: 8px;
+	padding: 6px 12px;
+}
 </style>
 </head>
 
@@ -39,21 +43,6 @@
 			<div class="preview"></div>
 		</div>
 	</dd>
-
-	<dt>動画</dt>
-	<dd>
-		<div>
-			<label><span>背面カメラ</span>
-			<input type="file" capture="environment" accept="video/*">
-			</label>
-		</div>
-
-		<div>
-			<label><span>インカメラ</span>
-			<input type="file" capture="user" accept="video/*">
-			</label>
-		</div>
-	</dd>
 </dl>
 
 <small>Home <a href="https://sgn-test.github.io/">Back</a></small>
@@ -64,16 +53,32 @@ document.querySelectorAll('.photo-capture').forEach(input => {
 		const file = e.target.files[0];
 		if (!file) return;
 
-		const preview = e.target.closest('div').querySelector('.preview');
+		const container = e.target.closest('div');
+		const preview = container.querySelector('.preview');
 		preview.innerHTML = '';
 
+		// 画像表示
 		const img = document.createElement('img');
-		img.src = URL.createObjectURL(file);
+		const url = URL.createObjectURL(file);
+		img.src = url;
 		preview.appendChild(img);
 
-		// メモリ解放（画像読み込み後）
+		// 保存ボタン
+		const btn = document.createElement('button');
+		btn.textContent = '保存';
+		btn.addEventListener('click', () => {
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = 'photo_' + Date.now() + '.jpg';
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+		});
+		preview.appendChild(btn);
+
+		// メモリ解放
 		img.onload = () => {
-			URL.revokeObjectURL(img.src);
+			URL.revokeObjectURL(url);
 		};
 	});
 });
