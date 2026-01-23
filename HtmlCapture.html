@@ -10,23 +10,16 @@ body {
   font-family: sans-serif;
   padding: 16px;
 }
-h1, h2 {
-  margin-top: 24px;
-}
-input[type=file] {
-  display: none;
-}
 button {
-  padding: 10px 16px;
+  padding: 12px 18px;
   font-size: 16px;
-  margin: 6px 0;
 }
 .preview, .gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 12px;
 }
-.preview img, .gallery img {
+img {
   width: 100%;
   border-radius: 8px;
 }
@@ -39,6 +32,9 @@ button {
   right: 4px;
   font-size: 12px;
 }
+input[type=file] {
+  display: none;
+}
 </style>
 </head>
 
@@ -46,10 +42,8 @@ button {
 
 <h1>📸 カメラ連続撮影</h1>
 
-<label>
-  <button>📷 撮影する（連続OK）</button>
-  <input type="file" accept="image/*" capture="environment" id="camera">
-</label>
+<button id="openCamera">📷 撮影する</button>
+<input type="file" id="camera" accept="image/*" capture="environment">
 
 <h2>👀 最新プレビュー</h2>
 <div class="preview" id="preview"></div>
@@ -58,51 +52,56 @@ button {
 <div class="gallery" id="gallery"></div>
 
 <script>
-/* ---------- IndexedDB ---------- */
-let db;
-const request = indexedDB.open("photoDB", 1);
+/* ===== カメラ起動 ===== */
+const cameraInput = document.getElementById("camera");
+document.getElementById("openCamera").onclick = () => {
+  cameraInput.click(); // ← これが重要
+};
 
-request.onupgradeneeded = e => {
+/* ===== IndexedDB ===== */
+let db;
+const req = indexedDB.open("photoDB", 1);
+
+req.onupgradeneeded = e => {
   db = e.target.result;
   db.createObjectStore("photos", { keyPath: "id", autoIncrement: true });
 };
 
-request.onsuccess = e => {
+req.onsuccess = e => {
   db = e.target.result;
   loadPhotos();
 };
 
-/* ---------- 撮影処理 ---------- */
-document.getElementById("camera").addEventListener("change", e => {
+/* ===== 撮影後 ===== */
+cameraInput.addEventListener("change", e => {
   const file = e.target.files[0];
   if (!file) return;
 
   const reader = new FileReader();
   reader.onload = () => {
-    const data = reader.result;
-    showPreview(data);
-    savePhoto(data);
+    showPreview(reader.result);
+    savePhoto(reader.result);
   };
   reader.readAsDataURL(file);
 
-  // 同じ操作で連続撮影できるようリセット
-  e.target.value = "";
+  // 連続撮影できるようにリセット
+  cameraInput.value = "";
 });
 
-/* ---------- プレビュー ---------- */
+/* ===== プレビュー ===== */
 function showPreview(data) {
-  const preview = document.getElementById("preview");
-  preview.innerHTML = `<img src="${data}">`;
+  document.getElementById("preview").innerHTML =
+    `<img src="${data}">`;
 }
 
-/* ---------- 保存 ---------- */
+/* ===== 保存 ===== */
 function savePhoto(data) {
   const tx = db.transaction("photos", "readwrite");
   tx.objectStore("photos").add({ image: data, time: Date.now() });
   tx.oncomplete = loadPhotos;
 }
 
-/* ---------- 読み込み ---------- */
+/* ===== 一覧 ===== */
 function loadPhotos() {
   const gallery = document.getElementById("gallery");
   gallery.innerHTML = "";
@@ -111,28 +110,27 @@ function loadPhotos() {
   const store = tx.objectStore("photos");
 
   store.openCursor(null, "prev").onsuccess = e => {
-    const cursor = e.target.result;
-    if (!cursor) return;
+    const cur = e.target.result;
+    if (!cur) return;
 
     const card = document.createElement("div");
     card.className = "card";
 
     const img = document.createElement("img");
-    img.src = cursor.value.image;
+    img.src = cur.value.image;
 
-    const btn = document.createElement("button");
-    btn.textContent = "削除";
-    btn.onclick = () => deletePhoto(cursor.key);
+    const del = document.createElement("button");
+    del.textContent = "削除";
+    del.onclick = () => deletePhoto(cur.key);
 
-    card.appendChild(img);
-    card.appendChild(btn);
+    card.append(img, del);
     gallery.appendChild(card);
 
-    cursor.continue();
+    cur.continue();
   };
 }
 
-/* ---------- 削除 ---------- */
+/* ===== 削除 ===== */
 function deletePhoto(id) {
   const tx = db.transaction("photos", "readwrite");
   tx.objectStore("photos").delete(id);
