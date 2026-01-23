@@ -2,170 +2,142 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width">
-<title>HTML CAPTURE | BLACKFLAG</title>
-
-<link rel="manifest" href="manifest.json">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Camera Capture PWA</title>
 
 <style>
-body { font-family: sans-serif; padding: 10px; }
-h1, h2 { margin-top: 20px; }
-
-.preview img {
-	max-width: 100%;
-	border: 1px solid #ccc;
-	margin-top: 8px;
+body {
+  font-family: sans-serif;
+  padding: 16px;
 }
-
-.gallery {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-	gap: 8px;
-	margin-top: 10px;
+h1, h2 {
+  margin-top: 24px;
 }
-
-.gallery img {
-	width: 100%;
-	border: 1px solid #ccc;
+input[type=file] {
+  display: none;
 }
-
-.gallery button {
-	width: 100%;
-	font-size: 12px;
-	padding: 4px;
+button {
+  padding: 10px 16px;
+  font-size: 16px;
+  margin: 6px 0;
 }
-
-.toast {
-	position: fixed;
-	bottom: 20px;
-	left: 50%;
-	transform: translateX(-50%);
-	background: rgba(0,0,0,0.8);
-	color: #fff;
-	padding: 8px 16px;
-	border-radius: 20px;
-	display: none;
+.preview, .gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+.preview img, .gallery img {
+  width: 100%;
+  border-radius: 8px;
+}
+.card {
+  position: relative;
+}
+.card button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 12px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>HTML CAPTURE</h1>
+<h1>📸 カメラ連続撮影</h1>
 
-<!-- 撮影 -->
-<h2>撮影（何枚でもOK）</h2>
-<input type="file" accept="image/*" capture="environment" id="camera">
+<label>
+  <button>📷 撮影する（連続OK）</button>
+  <input type="file" accept="image/*" capture="environment" id="camera">
+</label>
+
+<h2>👀 最新プレビュー</h2>
 <div class="preview" id="preview"></div>
 
-<!-- 保存済み一覧 -->
-<h2>保存済み写真</h2>
+<h2>📚 保存済み写真</h2>
 <div class="gallery" id="gallery"></div>
 
-<div class="toast" id="toast"></div>
-
 <script>
-// --------------------
-// Service Worker
-// --------------------
-if ('serviceWorker' in navigator) {
-	navigator.serviceWorker.register('sw.js');
-}
-
-// --------------------
-// IndexedDB
-// --------------------
+/* ---------- IndexedDB ---------- */
 let db;
-const req = indexedDB.open('capture-db', 1);
+const request = indexedDB.open("photoDB", 1);
 
-req.onupgradeneeded = e => {
-	e.target.result.createObjectStore('photos', { autoIncrement: true });
+request.onupgradeneeded = e => {
+  db = e.target.result;
+  db.createObjectStore("photos", { keyPath: "id", autoIncrement: true });
 };
 
-req.onsuccess = e => {
-	db = e.target.result;
-	loadGallery();
+request.onsuccess = e => {
+  db = e.target.result;
+  loadPhotos();
 };
 
-// --------------------
-// トースト
-// --------------------
-function showToast(text) {
-	const t = document.getElementById('toast');
-	t.textContent = text;
-	t.style.display = 'block';
-	setTimeout(() => t.style.display = 'none', 1500);
-}
+/* ---------- 撮影処理 ---------- */
+document.getElementById("camera").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-// --------------------
-// 保存
-// --------------------
-function savePhoto(blob) {
-	const tx = db.transaction('photos', 'readwrite');
-	tx.objectStore('photos').add(blob);
-	tx.oncomplete = () => {
-		loadGallery();
-		showToast('保存しました');
-	};
-}
+  const reader = new FileReader();
+  reader.onload = () => {
+    const data = reader.result;
+    showPreview(data);
+    savePhoto(data);
+  };
+  reader.readAsDataURL(file);
 
-// --------------------
-// 一覧表示
-// --------------------
-function loadGallery() {
-	const gallery = document.getElementById('gallery');
-	gallery.innerHTML = '';
-
-	const tx = db.transaction('photos', 'readonly');
-	const store = tx.objectStore('photos');
-
-	store.openCursor().onsuccess = e => {
-		const cursor = e.target.result;
-		if (!cursor) return;
-
-		const key = cursor.key;
-
-		const div = document.createElement('div');
-
-		const img = document.createElement('img');
-		img.src = URL.createObjectURL(cursor.value);
-		div.appendChild(img);
-
-		const del = document.createElement('button');
-		del.textContent = '削除';
-		del.onclick = () => {
-			if (!confirm('削除しますか？')) return;
-			const dtx = db.transaction('photos', 'readwrite');
-			dtx.objectStore('photos').delete(key);
-			dtx.oncomplete = loadGallery;
-		};
-		div.appendChild(del);
-
-		gallery.appendChild(div);
-		cursor.continue();
-	};
-}
-
-// --------------------
-// 撮影 → 即保存 → 次も撮れる
-// --------------------
-document.getElementById('camera').addEventListener('change', e => {
-	const file = e.target.files[0];
-	if (!file) return;
-
-	// プレビュー（直前の1枚）
-	const preview = document.getElementById('preview');
-	preview.innerHTML = '';
-	const img = document.createElement('img');
-	img.src = URL.createObjectURL(file);
-	preview.appendChild(img);
-
-	// 保存
-	savePhoto(file);
-
-	// ★ これが超重要：次の撮影を可能にする
-	e.target.value = '';
+  // 同じ操作で連続撮影できるようリセット
+  e.target.value = "";
 });
+
+/* ---------- プレビュー ---------- */
+function showPreview(data) {
+  const preview = document.getElementById("preview");
+  preview.innerHTML = `<img src="${data}">`;
+}
+
+/* ---------- 保存 ---------- */
+function savePhoto(data) {
+  const tx = db.transaction("photos", "readwrite");
+  tx.objectStore("photos").add({ image: data, time: Date.now() });
+  tx.oncomplete = loadPhotos;
+}
+
+/* ---------- 読み込み ---------- */
+function loadPhotos() {
+  const gallery = document.getElementById("gallery");
+  gallery.innerHTML = "";
+
+  const tx = db.transaction("photos", "readonly");
+  const store = tx.objectStore("photos");
+
+  store.openCursor(null, "prev").onsuccess = e => {
+    const cursor = e.target.result;
+    if (!cursor) return;
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const img = document.createElement("img");
+    img.src = cursor.value.image;
+
+    const btn = document.createElement("button");
+    btn.textContent = "削除";
+    btn.onclick = () => deletePhoto(cursor.key);
+
+    card.appendChild(img);
+    card.appendChild(btn);
+    gallery.appendChild(card);
+
+    cursor.continue();
+  };
+}
+
+/* ---------- 削除 ---------- */
+function deletePhoto(id) {
+  const tx = db.transaction("photos", "readwrite");
+  tx.objectStore("photos").delete(id);
+  tx.oncomplete = loadPhotos;
+}
 </script>
 
 </body>
