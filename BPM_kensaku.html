@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<!-- saved from url=(0030)http://localhost:59652/kensaku -->
-<html lang="en" class=" js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths" style=""><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>
-	BPM for mobile
+<!-- saved from url=(0042)https://ebenewcar.jp/bpm_demo/kensaku.aspx -->
+<html lang="en" style="" class=" js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>
+	 - BP Management System for mobile
 </title><script src="./BPM_kensaku_files/modernizr-2.8.3.js"></script>
 <link href="./BPM_kensaku_files/bootstrap.css" rel="stylesheet">
 <link href="./BPM_kensaku_files/Site.css" rel="stylesheet">
-<link href="./favicon.ico" rel="shortcut icon" type="image/x-icon"></head>
+<link href="https://bpm-demo.github.io/favicon.ico" rel="shortcut icon" type="image/x-icon"></head>
 <body>
-    <form method="post" action="./BPM_kensaku" id="ctl01">
+    <form method="post" action="./BPM_kensaku.html" id="ctl01">
 <div class="aspNetHidden">
 <input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="">
 <input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="">
-<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="eNI45U3dC5B8O7BVitz1tOBvRR6CJ4zCNCtBGauGXCZrVYq5/YmuP6VqpLq8+vy0ffFpWocQlQr9grRRaNiddjuq9zJELtJ6wTip/Hf3TauayKOl6OblCpyxiV4OA9a92tvvr526kK4R0BlA7vcErlZHV0iy2kVrXyu5o2g9yxdkEuCGAhLsTr9lb9x3PWkVwNspaOGJiVKKtjLjCBY4qw==">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="nwtcXCEnoxhpJtHXEXwl/5E03b18WwZ2RSnD8RYX9COqrpQa/qmsWEddYjjEITRCvXf+2zqtemwIBaq63lFd/0HRFzR62l8Kkg5uqmaQdHCZVuEiKdjd8miiEg4BrCxvz8oBlmVXfemiE4UrOAuCddBvPW25X48pCuhhuLFvHmlTs0oJAbELMdJ/pG44/ufNL8VOLXOiaie8m6rgtlZWSQ==">
 </div>
 
 <script type="text/javascript">
@@ -44,7 +44,7 @@ if (typeof(Sys) === 'undefined') throw new Error('ASP.NET Ajax クライアン�
 <script src="./BPM_kensaku_files/WebFormsJs" type="text/javascript"></script>
 <div class="aspNetHidden">
 
-	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="309A73F1">
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="D348543E">
 </div>
         <script type="text/javascript">
 //<![CDATA[
@@ -65,9 +65,9 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li><a href="https://bpm-demo.github.io/">ホーム</a></li>
+                        <!--<li><a href="./">ホーム</a></li>-->
                         <!--<li><a href="About">詳細</a></li>-->
-                        <li><a href="https://bpm-demo.github.io/">問い合わせ</a></li>
+                        <!--<li><a href="Contact">問い合わせ</a></li>-->
                     </ul>
                     
                             <ul class="nav navbar-nav navbar-right">
@@ -110,7 +110,11 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
                         <span class="label label-info"><strong>受付番号</strong></span>
                     </div>
                     <div class="col-xs-8">
-                        <span>20260101001</span>
+                        <!--
+                        <input id="KEYUKETSUIKENO" type="number" class="form-control" 
+                            oninput="if(this.value.length > 11) this.value = this.value.slice(0, 11);" value=""/>
+                        -->
+                        <input id="KEYUKETSUIKENO" type="tel" class="form-control" maxlength="11" oninput="this.value=this.value.replace(/[^0-9]/g,&#39;&#39;);" value="">
                     </div>
                 </div>
                 <hr style="margin: 10px 0;">
@@ -119,7 +123,7 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
                         <span class="label label-info">車名</span>
                     </div>
                     <div class="col-xs-8">
-                        プリウス4WD ABCD
+                       <input id="KEYCARNAME" type="text" class="form-control" maxlength="20" value=""> 
                     </div>
                 </div>
                 <hr style="margin: 10px 0;">
@@ -128,7 +132,12 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
                         <span class="label label-info">登録番号</span>
                     </div>
                     <div class="col-xs-8">
-                        仙台335あ1234
+                        <!--
+                        <input id="KEYCARNO" type="number" class="form-control" 
+                            oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4);" value="1122"/>
+                        -->
+                        <input id="KEYCARNO" type="tel" class="form-control" maxlength="4" oninput="this.value=this.value.replace(/[^0-9]/g,&#39;&#39;);" value="1122">
+
                     </div>
                 </div>
             </div>
@@ -166,22 +175,22 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
                 <div class="result-card">
                     <div class="row flex-row">
                         <div class="col-xs-4">受付番号</div>
-                        <div class="col-xs-5"><span>20260101001</span></div>
+                        <div class="col-xs-5"><span>20260101001-0000</span></div>
                         <div class="col-xs-3">
                             <button type="button" class="btn btn-primary pull-right">選択</button>
                         </div>
                     </div>
                     <div class="row flex-row">
                         <div class="col-xs-4">顧客名</div>
-                        <div class="col-xs-8">仙台　史郎</div>
+                        <div class="col-xs-8">三浦　史郎</div>
                     </div>
                     <div class="row flex-row">
                         <div class="col-xs-4">車名</div>
-                        <div class="col-xs-8">プリウス4WD ABCD</div>
+                        <div class="col-xs-8">ﾌﾟﾘｳｽ ZVW60</div>
                     </div>
                     <div class="row flex-row">
                         <div class="col-xs-4">登録番号</div>
-                        <div class="col-xs-5">仙台335あ1234</div>
+                        <div class="col-xs-5">練馬335あ1122</div>
                         <div class="col-xs-3">
                             <button type="button" class="btn btn-primary pull-right">確認</button>
                         </div>
@@ -192,22 +201,22 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
                 <div class="result-card">
                     <div class="row flex-row">
                         <div class="col-xs-4">受付番号</div>
-                        <div class="col-xs-5"><span>20260101002</span></div>
+                        <div class="col-xs-5"><span>20260101002-0000</span></div>
                         <div class="col-xs-3">
                             <button type="button" class="btn btn-primary pull-right">選択</button>
                         </div>
                     </div>
                     <div class="row flex-row">
                         <div class="col-xs-4">顧客名</div>
-                        <div class="col-xs-8">宮城　花子</div>
+                        <div class="col-xs-8">伊集院　春奈</div>
                     </div>
                     <div class="row flex-row">
                         <div class="col-xs-4">車名</div>
-                        <div class="col-xs-8">アクア ブルー</div>
+                        <div class="col-xs-8">ｿｱﾗ UZZ40</div>
                     </div>
                     <div class="row flex-row">
                         <div class="col-xs-4">登録番号</div>
-                        <div class="col-xs-5">宮城500い5678</div>
+                        <div class="col-xs-5">品川335い1122</div>
                         <div class="col-xs-3">
                             <button type="button" class="btn btn-primary pull-right">確認</button>
                         </div>
@@ -218,22 +227,22 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
                 <div class="result-card">
                     <div class="row flex-row">
                         <div class="col-xs-4">受付番号</div>
-                        <div class="col-xs-5"><span>20260101003</span></div>
+                        <div class="col-xs-5"><span>20260101003-0000</span></div>
                         <div class="col-xs-3">
                             <button type="button" class="btn btn-primary pull-right">選択</button>
                         </div>
                     </div>
                     <div class="row flex-row">
                         <div class="col-xs-4">顧客名</div>
-                        <div class="col-xs-8">福島　三郎</div>
+                        <div class="col-xs-8">佐々木　三郎</div>
                     </div>
                     <div class="row flex-row">
                         <div class="col-xs-4">車名</div>
-                        <div class="col-xs-8">セレナ ハイウェイスター</div>
+                        <div class="col-xs-8">ｾﾚﾅ 5AA-GC27</div>
                     </div>
                     <div class="row flex-row">
                         <div class="col-xs-4">登録番号</div>
-                        <div class="col-xs-5">福島300う9012</div>
+                        <div class="col-xs-5">品川300う1122</div>
                         <div class="col-xs-3">
                             <button type="button" class="btn btn-primary pull-right">確認</button>
                         </div>

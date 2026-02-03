@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<!-- saved from url=(0034)http://localhost:59652/Gazosentaku -->
-<html lang="en" class=" js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths" style=""><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>
-	BPM for mobile
+<!-- saved from url=(0046)https://ebenewcar.jp/bpm_demo/Gazosentaku.aspx -->
+<html lang="en" style="" class=" js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>
+	 - BP Management System for mobile
 </title><script src="./BPM_Gazosentaku_files/modernizr-2.8.3.js"></script>
 <link href="./BPM_Gazosentaku_files/bootstrap.css" rel="stylesheet">
 <link href="./BPM_Gazosentaku_files/Site.css" rel="stylesheet">
-<link href="./favicon.ico" rel="shortcut icon" type="image/x-icon"></head>
+<link href="https://bpm-demo.github.io/favicon.ico" rel="shortcut icon" type="image/x-icon"></head>
 <body>
-    <form method="post" action="./BPM_Gazosentaku" id="ctl01">
+    <form method="post" action="./BPM_Gazosentaku.html" id="ctl01">
 <div class="aspNetHidden">
 <input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="">
 <input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="">
-<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="e33AdCXO4XT/tIjznzSnQgaQQ1Yf+i9LEKDsF7w9QX495WtQu0qvCTgmOMfwq+Zzfzaef9ILtu1TKwOUVSuLkDKVsNMWIwSVsBLYe1i3HtfUcrwg0tHDg73j0hygel8Yb1DVN5+0WCmRLpib6dKyoq6Yh6mCpYytjjNkMVjwlYKA2Gjmsidb72esIQJIkUu4DV+GvuR4FZpO0n4Lv+aq2g==">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="FdRMfu+tgeFCB1Kg++VoS8SeRM8X2h+FCV+vrgCqxj5qccu+74PzXzggKWPygCUFoCuyz5PuVgQV5ovJ02rLbIh8rP4m9eEiGQihWxhuBsUFOyofNy4UK1L5DL0rBC/S6gg4Nqt+sgVRH9kFONhvKN3xeTCV9ViY4I+kLbQm0uKp2L77hQVywmkqIXoTeQ/G+Cpr2UaeeZ8jPW63/cbLTg==">
 </div>
 
 <script type="text/javascript">
@@ -44,7 +44,7 @@ if (typeof(Sys) === 'undefined') throw new Error('ASP.NET Ajax クライアン�
 <script src="./BPM_Gazosentaku_files/WebFormsJs" type="text/javascript"></script>
 <div class="aspNetHidden">
 
-	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="A24075F0">
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="44EE563D">
 </div>
         <script type="text/javascript">
 //<![CDATA[
@@ -65,9 +65,9 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li><a href="https://bpm-demo.github.io/">ホーム</a></li>
+                        <!--<li><a href="./">ホーム</a></li>-->
                         <!--<li><a href="About">詳細</a></li>-->
-                        <li><a href="https://bpm-demo.github.io/">問い合わせ</a></li>
+                        <!--<li><a href="Contact">問い合わせ</a></li>-->
                     </ul>
                     
                             <ul class="nav navbar-nav navbar-right">
@@ -200,7 +200,16 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
             height: auto;
             border: 1px solid #ccc;
             box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            /* iOSで長押しメニュー（保存など）が出るのを防ぐ */
+            -webkit-touch-callout: none; 
+            user-select: none;
         }
+
+        /* 長押し中に少し透けるようにして「押してる感」を出す */
+        .preview-img:active {
+            opacity: 0.6;
+        }
+        
         /* ファイル入力は隠す */
         .hidden-file { display: none; }
     </style>
@@ -216,7 +225,7 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
                     <div class="col-xs-8">
 
                         <!-- ここにJavaScriptで日時が流し込まれます -->
-                        <span id="current-datetime">2026年01月29日 16:33</span>
+                        <span id="current-datetime">2026年02月03日 17:20</span>
 
                     </div>
                 </div>
@@ -245,6 +254,12 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
                 </div>
                 <div id="container-before" class="photo-container">
                     <!-- ここに画像が追加される -->
+        
+                    <!-- 初期画像：URLは実際のパス（~/PDF/...等）に書き換えてください -->
+                    <img src="./img/sample1.png" class="preview-img" onmousedown="startPress(event)" onmouseup="cancelPress()" ontouchstart="startPress(event)" ontouchend="cancelPress()">
+
+                    <img src="./img/sample2.png" class="preview-img" onmousedown="startPress(event)" onmouseup="cancelPress()" ontouchstart="startPress(event)" ontouchend="cancelPress()">
+
                 </div>
             </div>
 
@@ -275,10 +290,7 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
             <div class="row" style="margin-top: 15px;">
 
             </div>
-
-
-
-            
+                                             
         </div>
 
         <div class="col-xs-12"> <!-- col-md-4からスマホ対応のcol-xs-12に変更 -->
@@ -303,6 +315,10 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
 
 <!-- パターン1：JavaScript（ファイルの最後の方に書いてください） -->
 <script>
+
+    let pressTimer;
+
+
     (function() {
         const now = new Date();
         const yyyy = now.getFullYear();
@@ -317,6 +333,23 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
         document.getElementById('current-datetime').innerText = formatTime;
     })();
 
+    // 長押し判定開始（500ms以上で削除確認）
+    function startPress(e) {
+        const element = e.currentTarget;
+        // 0.5秒長押しで発動
+        pressTimer = window.setTimeout(function() {
+            if (confirm("この画像を削除しますか？")) {
+                element.remove();
+            }
+        }, 500); 
+    }
+
+    // 指やマウスを離したらタイマー解除
+    function cancelPress() {
+        clearTimeout(pressTimer);
+    }
+
+    /*
     function addPhotos(input, containerId) {
         const container = document.getElementById(containerId);
         const files = input.files;
@@ -354,6 +387,48 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
         // 連続で同じファイルを選択できるように入力をリセット
         input.value = "";
     }
+    */
+
+    // 画像追加関数（修正版）
+    function addPhotos(input, containerId) {
+        const container = document.getElementById(containerId);
+        const files = input.files;
+        const maxPhotos = 30;
+
+        if (!files.length) return;
+
+        let currentCount = container.getElementsByTagName('img').length;
+
+        for (let i = 0; i < files.length; i++) {
+            if (currentCount >= maxPhotos) {
+                alert("画像は最大" + maxPhotos + "枚までです。");
+                break;
+            }
+
+            const file = files[i];
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'preview-img';
+
+                // --- 長押し削除イベントを付与 ---
+                img.addEventListener('mousedown', startPress);
+                img.addEventListener('mouseup', cancelPress);
+                img.addEventListener('touchstart', startPress);
+                img.addEventListener('touchend', cancelPress);
+                // -----------------------------
+
+                container.appendChild(img);
+            };
+
+            reader.readAsDataURL(file);
+            currentCount++;
+        }
+        input.value = "";
+    }
+
 </script>
 
 

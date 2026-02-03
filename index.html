@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<!-- saved from url=(0023)http://localhost:59652/ -->
-<html lang="en" class=" js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths" style=""><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>
-	BPM for mobile
+<!-- saved from url=(0030)https://ebenewcar.jp/bpm_demo/ -->
+<html lang="en" style="" class=" js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>
+	 - BP Management System for mobile
 </title><script src="./index_files/modernizr-2.8.3.js"></script>
 <link href="./index_files/bootstrap.css" rel="stylesheet">
 <link href="./index_files/Site.css" rel="stylesheet">
-<link href="./favicon.ico" rel="shortcut icon" type="image/x-icon"></head>
+<link href="https://ebenewcar.jp/bpm_demo/favicon.ico" rel="shortcut icon" type="image/x-icon"></head>
 <body>
-    <form method="post" action="https://bpm-demo.github.io/" id="ctl01">
+    <form method="post" action="https://ebenewcar.jp/bpm_demo/" id="ctl01">
 <div class="aspNetHidden">
 <input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="">
 <input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="">
-<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="MxRFUqM4GzFrhxVMeSoqdp9Hd2pgmMJklONFwMBVKOieY4jboU9V76LIFU2hAlvqhW+tH/oF3GTVZDH1SX1DuIaYWZFc4t8NHIa2BpaWSDRHkfU9JWbWXkOna9SrPp/lpri2WsGFZk4+mkP5UjPKARpygY5jgpLiFHEO6JbUxmV0K77+k/os90Y8NF89mMvWxiQmPdTwvr5Mit0IKmTA5A==">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="QHvpkGUKxuFm+AOQ4C6dKIxQ914y0OmlKMu77vWrjeVB9B+OfISomB4+ol3xS8wr8w9rgDjei3cm6HzlCyqrgeBKlQTCv/h8MbuvnHbjGoFZtHqnKi6iXuzyPK8LZpLP8eLh74tIHWDbpG8mtCS60kg8hhRt7WbqJ+MejwmKnnxKZEPI2DEnFDxU924mLgWBcEM11MW+zcHc3XD9RSY09g==">
 </div>
 
 <script type="text/javascript">
@@ -44,7 +44,7 @@ if (typeof(Sys) === 'undefined') throw new Error('ASP.NET Ajax クライアン�
 <script src="./index_files/WebFormsJs" type="text/javascript"></script>
 <div class="aspNetHidden">
 
-	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="CA0B0334">
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="6CB8E381">
 </div>
         <script type="text/javascript">
 //<![CDATA[
@@ -65,9 +65,9 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li><a href="https://bpm-demo.github.io/">ホーム</a></li>
+                        <!--<li><a href="./">ホーム</a></li>-->
                         <!--<li><a href="About">詳細</a></li>-->
-                        <li><a href="https://bpm-demo.github.io/">問い合わせ</a></li>
+                        <!--<li><a href="Contact">問い合わせ</a></li>-->
                     </ul>
                     
                             <ul class="nav navbar-nav navbar-right">
@@ -83,8 +83,12 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
 
     <div class="jumbotron">
         <h2>BPM for mobile</h2>
-        <p class="lead">担当者選択</p>
-        <!--<p><a href="http://www.asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a> </p>-->
+        <div class="col-xs-6">
+            <p class="lead text-left">担当者選択</p>
+        </div>
+        <div class="col-xs-6">
+            <p class="lead"></p>
+        </div>
     </div>
 
     <div class="row">
@@ -93,7 +97,7 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
             <p>
                 拠点コードを入力してください。</p>
             <p>
-                <input id="CDKYOTEN" type="number" class="form-control">
+                <input id="CDKYOTEN" type="number" class="form-control" value="0003">
             </p>
         </div>
         <div class="col-md-4">
@@ -101,35 +105,22 @@ Sys.WebForms.PageRequestManager._initialize('ctl00$ctl09', 'ctl01', [], [], [], 
             <p>
                 担当者コードを入力してください。</p>
             <p>
-                <input id="CDTAN" type="number" class="form-control">
+                <input id="CDTAN" type="number" class="form-control" value="00002">
             </p>
         </div>
         <div class="col-md-4">
             <h2>&nbsp;</h2>
             <p>
-                <a href="./BPM_Syokigamen.html" class="btn btn-primary btn-lg"> &nbsp;&nbsp;次へ　»</a></p>
+            <a href="./BPM_Syokigamen.html" class="btn btn-primary btn-lg"> &nbsp;&nbsp;次へ　»</a></p>
         </div>
     </div>
-    <!--
-    <div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <h3>商品情報</h3>
-            <p>JANコード：0123456789</p>
-        </div>
-        <div class="col-md-6">
-            <h3>数量入力</h3>
-            <input type="number" class="form-control" />
-        </div>
-    </div>
-    -->
-</div>
+
 
             <hr>
             <footer>
                 <p>© 2026 - BP Management System for mobile</p>
             </footer>
-        
+        </div>
     </form>
 
 
